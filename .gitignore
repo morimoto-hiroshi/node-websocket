@@ -1,0 +1,8 @@
+# npm modules
+node_modules/
+
+# git local settings
+local.properties
+
+# Mac
+.DS_Store

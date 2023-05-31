@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>WebSocketチャット</title>
+    </head>
+    <body>
+        <section>
+            <span>websocket status:</span>
+            <span id="status">null</span>
+        </section>
+        <section>
+            <input id="send-text" type="text" placeholder="メッセージを入力">
+            <button id="send-button">メッセージ送信</button>
+        </section>
+        <section>
+            <div>メッセージ一覧</div>
+            <div id="messages"></div>
+        </section>
+        <script>
+            const URL = 'ws://' + location.host + '/'
+            const PROTOCOL = 'my-chat'
+            const socket = new WebSocket(URL, PROTOCOL)
+            //WebSocketイベントハンドラ
+            socket.onopen = function () {
+                setStatus('open')
+            }
+            socket.onmessage = function ( {data}) {
+                setStatus('message: ' + data)
+                document.querySelector('#messages').insertAdjacentHTML('afterend', `<div>${data}</div>`)
+            }
+            socket.onerror = function () {
+                setStatus('error')
+            }
+            socket.onclose = function () {
+                setStatus('close')
+            }
+            //送信ボタンのハンドラ
+            document.querySelector('#send-button').addEventListener('click', () => {
+                const text = document.querySelector('#send-text')
+                socket.send(text.value)
+                text.value = ''
+            })
+            function setStatus(status) {
+                document.querySelector('#status').innerHTML = status
+            }
+        </script>
+    </body>
+</html>
