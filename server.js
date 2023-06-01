@@ -6,7 +6,6 @@ const WebSocketServer = require('websocket').server
 const [EN0] = Object.values(os.networkInterfaces())
 const {address: ADDRESS} = EN0.find(({family}) => family === 'IPv4') //サーバーのIPアドレス
 const PORT = 3000 //httpサーバーのポート
-const ORIGIN = `http://${ADDRESS}:${PORT}`
 const PROTOCOL = 'my-chat' //WebSocketのプロトコル識別子
 
 // httpサーバーのrequestハンドラ
@@ -28,8 +27,7 @@ const server = http.createServer((request, response) => {
 
 // httpサーバーを起動
 server.listen(PORT, () => {
-    console.log(`***注意*** URLは "${ORIGIN}" を指定。"localhost:${PORT}" だとorigin検査でエラーになります。`)
-    console.log(`${new Date()} listen ${ORIGIN}`)
+    console.log(`${new Date()} listen http://${ADDRESS}:${PORT}`)
 })
 
 // WebSocketサーバーをhttpサーバーに寄生させる
@@ -42,7 +40,7 @@ const wsServer = new WebSocketServer({
 wsServer.on('request', (request) => {
     // originの検査
     console.log(`${new Date()} check origin: ${request.origin}`)
-    if (request.origin !== ORIGIN) {
+    if (request.origin !== `http://localhost:${PORT}` && request.origin !== `http://${ADDRESS}:${PORT}`) {
         request.reject()
         console.log(`${new Date()} REJECTED: ${request.origin}`)
         return

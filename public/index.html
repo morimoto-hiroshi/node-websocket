@@ -30,6 +30,7 @@
             }
             socket.onerror = function () {
                 setStatus('error')
+                console.log('error')
             }
             socket.onclose = function () {
                 setStatus('close')
