@@ -18,32 +18,32 @@
             <div id="messages"></div>
         </section>
         <script>
-            const URL = 'ws://' + location.host + '/'
-            const PROTOCOL = 'my-chat'
-            const socket = new WebSocket(URL, PROTOCOL)
+            const URL = 'ws://' + location.host + '/';
+            const PROTOCOL = 'my-chat';
+            const socket = new WebSocket(URL, PROTOCOL);
             //WebSocketイベントハンドラ
             socket.onopen = function () {
-                setStatus('open')
+                setStatus('open');
             }
             socket.onmessage = function ( {data}) {
-                setStatus('message: ' + data)
-                document.querySelector('#messages').insertAdjacentHTML('afterend', `<div>${data}</div>`)
+                setStatus('message: ' + data);
+                document.querySelector('#messages').insertAdjacentHTML('afterend', `<div>${data}</div>`);
             }
             socket.onerror = function () {
-                setStatus('error')
-                console.log('error')
+                setStatus('error');
+                console.log('error');
             }
             socket.onclose = function () {
-                setStatus('close')
+                setStatus('close');
             }
             //送信ボタンのハンドラ
             document.querySelector('#send-button').addEventListener('click', () => {
-                const text = document.querySelector('#send-text')
-                socket.send(text.value)
-                text.value = ''
+                const text = document.querySelector('#send-text');
+                socket.send(text.value);
+                text.value = '';
             })
             function setStatus(status) {
-                document.querySelector('#status').innerHTML = status
+                document.querySelector('#status').innerHTML = status;
             }
         </script>
     </body>
