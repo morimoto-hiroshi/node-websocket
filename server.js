@@ -11,19 +11,19 @@ const PORT = 3000; //httpサーバーのポート
 const PROTOCOL = 'my-chat'; //WebSocketのプロトコル識別子
 
 //httpサーバーのrequestハンドラ
-const g_httpServer = http.createServer((request, response) => {
-    const url = request.url;
+const g_httpServer = http.createServer((req, res) => {
+    const url = req.url;
     switch (url) {
         case '/':
             fs.readFile('./public/index.html', 'utf-8', (error, data) => {
-                response.writeHead(200, {'Content-Type': 'text/html'});
-                response.write(data);
-                response.end();
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.write(data);
+                res.end();
             })
             break;
         default:
-            response.writeHead(404);
-            response.end();
+            res.writeHead(404);
+            res.end();
     }
 });
 
@@ -39,17 +39,17 @@ const g_websocketServer = new websocketServer({
 });
 
 //WebSocketサーバーのrequestハンドラ
-g_websocketServer.on('request', (request) => {
+g_websocketServer.on('request', (req) => {
     //originの検査
-    console.log(`${new Date()} check origin: ${request.origin}`);
-    if (request.origin !== `http://localhost:${PORT}` && request.origin !== `http://${ADDRESS}:${PORT}`) {
-        request.reject();
-        console.log(`${new Date()} REJECTED: ${request.origin}`);
+    console.log(`${new Date()} check origin: ${req.origin}`);
+    if (req.origin !== `http://localhost:${PORT}` && req.origin !== `http://${ADDRESS}:${PORT}`) {
+        req.reject();
+        console.log(`${new Date()} REJECTED: ${req.origin}`);
         return;
     }
 
     //コネクション確立とイベントハンドラ
-    const connection = request.accept(PROTOCOL, request.origin);
+    const connection = req.accept(PROTOCOL, req.origin);
     console.log(`${new Date()} acceepted: ${connection.remoteAddress}`);
     connection.on('message', message => {
         switch (message.type) {
